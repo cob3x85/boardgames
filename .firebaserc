@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "redux-ingreso-egreso": {
+      "hosting": {
+        "Memorama": [
+          "redux-ingreso-egreso"
+        ]
+      }
+    }
+  }
+}

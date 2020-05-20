@@ -1,0 +1,55 @@
+<div *ngIf="showBoard">
+    <div class="alert text-center" role="alert" *ngIf="isLoading">
+        <h4 class="alert-heading">Cargando...</h4>
+        <p>
+            <span class="material-icons">
+        hourglass_empty
+        </span>
+        </p>
+        <p class="mb-0"></p>
+    </div>
+
+    <p class="confetti" *ngIf="confetti"></p>
+    <p class="confetti" *ngIf="confetti"></p>
+    <p class="confetti" *ngIf="confetti"></p>
+    <p class="confetti" *ngIf="confetti"></p>
+    <p class="confetti" *ngIf="confetti"></p>
+    <p class="confetti" *ngIf="confetti"></p>
+    <p class="confetti" *ngIf="confetti"></p>
+    <p class="confetti" *ngIf="confetti"></p>
+    <p class="confetti" *ngIf="confetti"></p>
+    <p class="confetti" *ngIf="confetti"></p>
+    <p class="confetti" *ngIf="confetti"></p>
+    <p class="confetti" *ngIf="confetti"></p>
+    <p class="confetti" *ngIf="confetti"></p>
+    <p class="confetti" *ngIf="confetti"></p>
+    <p class="confetti" *ngIf="confetti"></p>
+    <p class="confetti" *ngIf="confetti"></p>
+    <p class="confetti" *ngIf="confetti"></p>
+    <p class="confetti" *ngIf="confetti"></p>
+
+    <div class="alert-success" fxLayout="row" fxLayoutAlign="center" *ngIf="!isLoading">
+        <div class="box-nodrag " *ngFor="let card of cardsToFind">
+            <img src="{{card.url}}" />
+        </div>
+    </div>
+    <div class="board-container" *ngIf="!isLoading">
+
+        <div id="zombies" cdkDropList [cdkDropListData]="initArray" (cdkDropListDropped)="drop($event)" [cdkDropListEnterPredicate]="noReturnPredicate" cdkDropListConnectedTo="results" fxFlex fxLayout="row wrap" fxLayoutGap="2em" fxLayoutAlign="start start" fxLayout.sm="column"
+            fxLayout.xs="column" fxLayoutAlign.sm="space-evenly" fxLayoutAlign.xs="space-evenly">
+            <div class="box" *ngFor="let zombie of initArray" [cdkDragData]="zombie" cdkDrag cdkDragBoundary=".board-container">
+                <img src="{{zombie.url}}" />
+            </div>
+        </div>
+
+        <div fxLayout="row" fxFlex="1">
+            <!-- Empty separator -->
+        </div>
+
+        <div id="results" cdkDropList [cdkDropListData]="results" cdkDropListConnectedTo="zombies" class="result-list" (cdkDropListDropped)="drop($event)" [cdkDropListEnterPredicate]="imagePredicate" fxFlex fxLayout="row wrap" fxLayoutGap="2em" fxLayoutAlign="start start"
+            fxLayout.sm="column" fxLayout.xs="column" fxLayoutAlign.sm="space-evenly" fxLayoutAlign.xs="space-evenly">
+            <div class="box alert-success" *ngFor="let item of results" cdkDrag [cdkDragData]="item"> <img src="{{item.url}}" /></div>
+        </div>
+
+    </div>
+</div>
