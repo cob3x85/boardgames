@@ -99,9 +99,19 @@ export class BoardgameComponent implements OnInit, OnChanges {
     const initialCards2 = this.catalog.filter(e => !this.cardsToFind.includes(e)); // Add the initial catalog items to complete the list.
     this.initArray.push(...initialCards);
     this.initArray.push(...initialCards2);
+
+    this.shuffleArray(this.initArray);
     // console.log('6-Init array this should only have # of cards with true ', this.initArray);
   }
 
+  shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+
+    // console.log('Shuffled array', this.initArray);
+}
   // Validate if we have finish the game
   endGame() {
     if (this.cardsToFind.length === this.results.length) {
