@@ -1,41 +1,43 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, CdkDrag, transferArrayItem } from '@angular/cdk/drag-drop';
 import { BoardImages } from 'src/app/models/BoardImages';
 import Swal from 'sweetalert2';
+import { ImageService } from 'src/app/services/image.service';
+import { Subscription, Observable } from 'rxjs';
+import { AngularFireAuth } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-boardgame',
   templateUrl: './boardgame.component.html',
   styleUrls: ['./boardgame.component.scss']
 })
-export class BoardgameComponent implements OnInit, OnChanges {
+export class BoardgameComponent implements OnInit, OnChanges, OnDestroy {
 
   cardsToFind: BoardImages[] = [];
   confetti = false;
+  getImagesAsyncObservable = new Observable<BoardImages[]>();
+  getImagesAsyncSubscription = new Subscription();
   initArray: BoardImages[] = [];
   isLoading = false;
   results: BoardImages[] = [];
   showInstructionsCounter = 0;
 
+  @Input() category: string;
   @Input() numberCards: number;
   @Input() showBoard: boolean;
 
-  catalog: BoardImages[] = [
-    { url: 'assets/images/memorama/Mummy.png', id: 1 },
-    { url: 'assets/images/memorama/mummy2.png', id: 2 },
-    { url: 'assets/images/memorama/newspaper.png', id: 3 },
-    { url: 'assets/images/memorama/football.png', id: 4 },
-    { url: 'assets/images/memorama/vaquero1.png', id: 5 },
-    { url: 'assets/images/memorama/planta.png', id: 6 },
-    { url: 'assets/images/memorama/pirata.png', id: 7 },
-    { url: 'assets/images/memorama/Globo.png', id: 8 },
-  ];
+  catalog: BoardImages[] = [];
 
-  constructor() { }
+  constructor(private imageService: ImageService, private afAuth: AngularFireAuth) { }
+
+  ngOnDestroy(): void {
+    this.getImagesAsyncSubscription?.unsubscribe();
+  }
 
   ngOnChanges(changes: SimpleChanges) {
+    console.log(changes);
     if (this.numberCards > 0 && this.numberCards < 7) {
-      this.startGame();
+      this.initGame();
     } else if (this.numberCards != null) {
       this.isLoading = true;
       Swal.fire('Info', 'The number of cards is incorrect, the number must be between 3 and 6', 'info');
@@ -47,6 +49,46 @@ export class BoardgameComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.showInstructionsCounter = 0;
+  }
+
+  initGame() {
+    if (this.imageService.currentStorageType === this.imageService.storageType.Local) {
+      this.catalog = this.imageService.getImagesCatalog();
+      this.startGame();
+    } else {
+      this.getImagesAsyncSubscription = this.afAuth.authState.subscribe((fbUser: firebase.User) => {
+        if (fbUser) {
+          this.getImagesAsyncObservable = this.imageService.getImagesAsync(this.category);
+          this.getImagesAsyncObservable.subscribe(response => {
+            this.catalog = response;
+            if (this.catalog.length > 0) {
+              this.startGame();
+            }
+          }, error => {
+            Swal.fire({
+              toast: true,
+              position: 'bottom-right',
+              timer: 1800,
+              text: error,
+              titleText: 'Error Catalog downloaded',
+              icon: 'error',
+              showConfirmButton: false
+            });
+          },
+            () => {
+              Swal.fire({
+                toast: true,
+                position: 'bottom-right',
+                timer: 1800,
+                text: 'Finish retrieving data from firebase',
+                titleText: 'Catalog downloaded',
+                icon: 'info',
+                showConfirmButton: false
+              });
+            });
+        }
+      });
+    }
   }
 
   startGame() {
@@ -106,12 +148,12 @@ export class BoardgameComponent implements OnInit, OnChanges {
 
   shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
     }
 
     // console.log('Shuffled array', this.initArray);
-}
+  }
   // Validate if we have finish the game
   endGame() {
     if (this.cardsToFind.length === this.results.length) {

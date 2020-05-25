@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/storage';
-import { environment } from 'src/environments/environment';
-import { storage } from 'firebase';
 import { AuthService } from './services/auth.service';
 import { AngularFireAuth } from '@angular/fire/auth';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-root',
@@ -14,26 +13,26 @@ export class AppComponent implements OnInit {
   title = 'Kids Games';
   image: string;
 
-  constructor() {
+  constructor(private authService: AuthService, private afAuth: AngularFireAuth) {
 
   }
   ngOnInit(): void {
+    this.afAuth.signOut();
+    this.afAuth.signInAnonymously()
 
-    // this.authService.InitFireAuthListener();
+      .catch(error => {
+        Swal.fire({
+          toast: true,
+          position: 'bottom-right',
+          timer: 1800,
+          text: 'Auth error',
+          titleText: 'Error',
+          icon: 'error',
+          showConfirmButton: false
+        });
+      });
 
-    // this.afStorage.storage.ref('/' + environment.images).listAll()
-    //   .then(response => {
-    //     console.log(response);
-    //   });
-
-    // this.afAuth.authState.subscribe((fbUser: firebase.User) => {
-    //   if (fbUser) {
-    //     // const storageRef = this.afStorage.ref('wishlist.jpg');
-    //     // storageRef.getDownloadURL().subscribe(res => {
-    //     // this.image = res;
-    //     // });
-    //   }
-    // });
+    this.authService.InitFireAuthListener();
 
   }
 

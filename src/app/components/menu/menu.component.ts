@@ -7,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MenuComponent implements OnInit {
 
+  categorySelected: 'PlantsVsZombies';
+  dataContent = 'local';
   sizeSelected: string;
   numberCards: number;
   showBoard = false;

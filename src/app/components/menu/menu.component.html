@@ -19,15 +19,24 @@
                 <input matInput type="number" min="3" max="6" [(ngModel)]="numberCards" placeholder="Default is 3 cards" autocomplete="off" />
             </mat-form-field>
 
-            <!-- Next step -->
-            <!-- <mat-form-field>
+            <mat-form-field>
                 <mat-label>Categories</mat-label>
-                <mat-select>Select</mat-select>
-            </mat-form-field> -->
+
+                <mat-select [(value)]="categorySelected">
+                    <mat-option value="PlantsVsZombies">Plants Vs Zombies</mat-option>
+                    <!-- <mat-option>Numbers</mat-option>
+                    <mat-option>Vera and Wishes</mat-option> -->
+                </mat-select>
+            </mat-form-field>
+
+            <mat-radio-group aria-label="Local Storage / Firebase" [(ngModel)]="dataContent">
+                <mat-radio-button value="local">Local</mat-radio-button>
+                <mat-radio-button value="firebase">Firebase</mat-radio-button>
+            </mat-radio-group>
 
         </mat-card-content>
     </mat-card>
 </div>
 
 <!--Boardgame-->
-<app-boardgame [numberCards]="numberCards" #boardgame [showBoard]="showBoard"></app-boardgame>
+<app-boardgame [numberCards]="numberCards" #boardgame [showBoard]="showBoard" [category]="categorySelected"></app-boardgame>
