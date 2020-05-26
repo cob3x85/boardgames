@@ -21,10 +21,9 @@
 
             <mat-form-field>
                 <mat-label>Categories</mat-label>
-
                 <mat-select [(value)]="categorySelected">
                     <mat-option value="PlantsVsZombies">Plants Vs Zombies</mat-option>
-                    <!-- <mat-option>Numbers</mat-option>
+                    <!-- <mat-option value="numbers">Numbers</mat-option>
                     <mat-option>Vera and Wishes</mat-option> -->
                 </mat-select>
             </mat-form-field>
@@ -39,4 +38,4 @@
 </div>
 
 <!--Boardgame-->
-<app-boardgame [numberCards]="numberCards" #boardgame [showBoard]="showBoard" [category]="categorySelected"></app-boardgame>
+<app-boardgame [numberCards]="numberCards" #boardgame [showBoard]="showBoard" [category]="categorySelected" [content]="dataContent"></app-boardgame>

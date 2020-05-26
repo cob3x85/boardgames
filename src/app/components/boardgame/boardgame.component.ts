@@ -23,6 +23,7 @@ export class BoardgameComponent implements OnInit, OnChanges, OnDestroy {
   showInstructionsCounter = 0;
 
   @Input() category: string;
+  @Input() content: string;
   @Input() numberCards: number;
   @Input() showBoard: boolean;
 
@@ -35,16 +36,25 @@ export class BoardgameComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log(changes);
-    if (this.numberCards > 0 && this.numberCards < 7) {
-      this.initGame();
-    } else if (this.numberCards != null) {
-      this.isLoading = true;
-      Swal.fire('Info', 'The number of cards is incorrect, the number must be between 3 and 6', 'info');
-    } else {
-      this.numberCards = 3;
-    }
+    // tslint:disable-next-line: forin
+    for (const propName in changes) {
 
+      if (propName === 'content') {
+        this.imageService.changeDataSource();
+        this.initGame();
+      }
+
+      if (propName === 'numberCards') {
+        if (this.numberCards > 0 && this.numberCards < 7) {
+          this.initGame();
+        } else if (this.numberCards != null) {
+          this.isLoading = true;
+          Swal.fire('Info', 'The number of cards is incorrect, the number must be between 3 and 6', 'info');
+        } else {
+          this.numberCards = 3;
+        }
+      }
+    }
   }
 
   ngOnInit(): void {
@@ -52,7 +62,7 @@ export class BoardgameComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   initGame() {
-    if (this.imageService.currentStorageType === this.imageService.storageType.Local) {
+    if (this.content === this.imageService.storageType.Local) {
       this.catalog = this.imageService.getImagesCatalog();
       this.startGame();
     } else {

@@ -21,47 +21,41 @@ export class ImageService {
 
   catalog: BoardImages[] = [];
 
-  public get currentStorageType(): string {
-    return environment.storageDb;
-  }
-
   constructor(public authService: AuthService, private afStorage: AngularFireStorage) { }
 
   getImagesCatalog(): BoardImages[] {
 
-    if (this.currentStorageType === this.storageType.Local) {
-      // we use only the local image catalog
-      this.catalog = [
-        { url: 'assets/images/memorama/Mummy.png', id: 1, category: 'PlantVsZombies' },
-        { url: 'assets/images/memorama/mummy2.png', id: 2, category: 'PlantVsZombies' },
-        { url: 'assets/images/memorama/newspaper.png', id: 3, category: 'PlantVsZombies' },
-        { url: 'assets/images/memorama/football.png', id: 4, category: 'PlantVsZombies' },
-        { url: 'assets/images/memorama/vaquero1.png', id: 5, category: 'PlantVsZombies' },
-        { url: 'assets/images/memorama/planta.png', id: 6, category: 'PlantVsZombies' },
-        { url: 'assets/images/memorama/pirata.png', id: 7, category: 'PlantVsZombies' },
-        { url: 'assets/images/memorama/Globo.png', id: 8, category: 'PlantVsZombies' },
-        { url: 'assets/images/memorama/boomerang.jpg', id: 9, category: 'PlantVsZombies' },
-        { url: 'assets/images/memorama/boxer.png', id: 10, category: 'PlantVsZombies' },
-        { url: 'assets/images/memorama/cowboy2.png', id: 11, category: 'PlantVsZombies' },
-        { url: 'assets/images/memorama/mummy-head.png', id: 12, category: 'PlantVsZombies' },
-        { url: 'assets/images/memorama/mummy-pharaone.png', id: 13, category: 'PlantVsZombies' },
-        { url: 'assets/images/memorama/mummy3.png', id: 14, category: 'PlantVsZombies' },
-        { url: 'assets/images/memorama/pirate-captain.png', id: 15, category: 'PlantVsZombies' }
-      ];
+    // console.log('Catalog of Local images', this.catalog);
+    // we use only the local image catalog
+    this.catalog = [
+      { url: 'assets/images/memorama/Mummy.png', id: 1, category: 'PlantVsZombies' },
+      { url: 'assets/images/memorama/mummy2.png', id: 2, category: 'PlantVsZombies' },
+      { url: 'assets/images/memorama/newspaper.png', id: 3, category: 'PlantVsZombies' },
+      { url: 'assets/images/memorama/football.png', id: 4, category: 'PlantVsZombies' },
+      { url: 'assets/images/memorama/vaquero1.png', id: 5, category: 'PlantVsZombies' },
+      { url: 'assets/images/memorama/planta.png', id: 6, category: 'PlantVsZombies' },
+      { url: 'assets/images/memorama/pirata.png', id: 7, category: 'PlantVsZombies' },
+      { url: 'assets/images/memorama/Globo.png', id: 8, category: 'PlantVsZombies' },
+      { url: 'assets/images/memorama/boomerang.jpg', id: 9, category: 'PlantVsZombies' },
+      { url: 'assets/images/memorama/boxer.png', id: 10, category: 'PlantVsZombies' },
+      { url: 'assets/images/memorama/cowboy2.png', id: 11, category: 'PlantVsZombies' },
+      { url: 'assets/images/memorama/mummy-head.png', id: 12, category: 'PlantVsZombies' },
+      { url: 'assets/images/memorama/mummy-pharaone.png', id: 13, category: 'PlantVsZombies' },
+      { url: 'assets/images/memorama/mummy3.png', id: 14, category: 'PlantVsZombies' },
+      { url: 'assets/images/memorama/pirate-captain.png', id: 15, category: 'PlantVsZombies' }
+    ];
 
-      Swal.fire({
-        toast: true,
-        position: 'bottom-right',
-        timer: 1800,
-        text: `Catalog downloaded from ${environment.storageDb}`,
-        titleText: 'Catalog downloaded',
-        icon: 'info',
-        showConfirmButton: false
-      });
+    Swal.fire({
+      toast: true,
+      position: 'bottom-right',
+      timer: 1800,
+      text: `Catalog downloaded from Local`,
+      titleText: 'Catalog downloaded',
+      icon: 'info',
+      showConfirmButton: false
+    });
 
-      return this.catalog;
-
-    }
+    return this.catalog;
   }
 
   getImagesAsync(category: string): Observable<BoardImages[]> {
@@ -80,9 +74,11 @@ export class ImageService {
             icon: 'info',
             showConfirmButton: false
           });
+          // console.log('Catalog of Cache images', this.catalog);
           observer.next(this.catalog);
           return observable;
         }
+
         this.afStorage.storage.ref(`/${environment.images}`).listAll()
           .then(response => {
             // response.prefixes.forEach((folderRef) => {
@@ -114,7 +110,7 @@ export class ImageService {
                   });
                 });
             });
-
+            console.log('Catalog of new images', this.catalog);
             observer.next(this.catalog);
             observer.complete();
           });
@@ -128,7 +124,7 @@ export class ImageService {
         toast: true,
         position: 'bottom-right',
         timer: 1800,
-        text: `Catalog downloaded from ${environment.storageDb}`,
+        text: `Catalog downloaded from firebaseDb`,
         titleText: 'Catalog downloaded',
         icon: 'info',
         showConfirmButton: false
@@ -136,5 +132,10 @@ export class ImageService {
 
       return observable;
     }
+  }
+
+  changeDataSource() {
+    // console.log('clean catalog from image service');
+    this.catalog.length = 0;
   }
 }

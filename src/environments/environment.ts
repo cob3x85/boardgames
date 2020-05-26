@@ -14,8 +14,7 @@ export const environment = {
     measurementId: 'G-5F6NN8LN6C'
   },
   images: 'memorama/',
-  production: false,
-  storageDb: 'firebase'
+  production: false
 };
 
 /*

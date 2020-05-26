@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MenuComponent implements OnInit {
 
-  categorySelected: 'PlantsVsZombies';
+  categorySelected: string;
   dataContent = 'local';
   sizeSelected: string;
   numberCards: number;
@@ -17,6 +17,7 @@ export class MenuComponent implements OnInit {
 
   ngOnInit(): void {
     this.numberCards = 3; // initial value
+    this.categorySelected = 'PlantsVsZombies';
   }
 
 }
